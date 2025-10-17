@@ -4,6 +4,7 @@
   "package": "org.bacon.noseedmining.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "OreFeatureMixin"
   ],
   "injectors": {
     "defaultRequire": 1
