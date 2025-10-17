@@ -2,15 +2,16 @@ name: Release (build + publish + attach)
 
 on:
   release:
-    types: [published]  # run when a release is published
+    types: [published]
 
 permissions:
-  contents: write        # needed to attach assets
-  packages: write        # needed to publish to gh packages
+  contents: write
+  packages: write
 
 jobs:
   build-publish:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,19 +21,21 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      # Provision Gradle so we can call `gradle` (no wrapper needed)
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
 
       - name: Build
-        run: ./gradlew build
+        run: gradle build
 
       - name: Publish to GitHub Packages (Maven)
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publish --stacktrace
+        run: gradle publish --stacktrace
 
-      # Attach built jars to the GitHub Release page
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
